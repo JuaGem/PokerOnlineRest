@@ -41,6 +41,9 @@ public class GestioneTavoloController {
 	public Tavolo createTavolo(@Validated(InsertTavoloParam.class) @RequestBody Tavolo tavolo,
 			@PathVariable(required = true) Long id, @RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
+		
+		if(utenteInSession == null)
+			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		if (utenteInSession.getRuoli().contains(ruoloService.cercaPerDescrizioneECodice("Player User", "ROLE_PLAYER"))
 				&& utenteInSession.getRuoli().size() == 1)
@@ -52,7 +55,7 @@ public class GestioneTavoloController {
 				.contains(ruoloService.cercaPerDescrizioneECodice("Administrator", "ROLE_ADMIN"))) {
 			tavolo.setUtenteCreazione(utenteService.caricaSingoloUtente(id));
 			return tavoloService.inserisciNuovo(tavolo);
-		}
+		} 
 
 		tavolo.setUtenteCreazione(utenteInSession);
 		return tavoloService.inserisciNuovo(tavolo);
@@ -74,6 +77,9 @@ public class GestioneTavoloController {
 	public void associaUtenteAlTavolo(@PathVariable(required = true) Long idTavolo,
 			@PathVariable(required = true) Long idUtente, @RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
+		
+		if(utenteInSession == null)
+			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		if (utenteInSession.getRuoli().contains(ruoloService.cercaPerDescrizioneECodice("Player User", "ROLE_PLAYER"))
 				&& utenteInSession.getRuoli().size() == 1)

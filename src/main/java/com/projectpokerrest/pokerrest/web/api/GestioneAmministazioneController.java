@@ -43,6 +43,9 @@ public class GestioneAmministazioneController {
 	@GetMapping
 	public List<Utente> listAll(@RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
+		
+		if(utenteInSession == null)
+			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		if (!utenteInSession.getRuoli()
 				.contains(ruoloService.cercaPerDescrizioneECodice("Administrator", "ROLE_ADMIN")))
@@ -56,6 +59,9 @@ public class GestioneAmministazioneController {
 	public Utente createUtente(@Validated(InsertUtenteParamFromAdmin.class) @RequestBody Utente utente,
 			@RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
+		
+		if(utenteInSession == null)
+			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		if (!utenteInSession.getRuoli()
 				.contains(ruoloService.cercaPerDescrizioneECodice("Administrator", "ROLE_ADMIN")))
@@ -92,6 +98,9 @@ public class GestioneAmministazioneController {
 	public Utente update(@Validated(InsertUtenteParamFromAdmin.class) @RequestBody Utente utenteInput,
 			@PathVariable(required = true) Long id, @RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
+		
+		if(utenteInSession == null)
+			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		if (!utenteInSession.getRuoli()
 				.contains(ruoloService.cercaPerDescrizioneECodice("Administrator", "ROLE_ADMIN")))
@@ -116,6 +125,9 @@ public class GestioneAmministazioneController {
 			@PathVariable(required = true) Long id, @RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
 		
+		if(utenteInSession == null)
+			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
+		
 		if(!utenteInSession.getId().equals(id))
 			throw new RuntimeException("Non puoi modificare le credenziali di un altro utente");
 		
@@ -138,6 +150,9 @@ public class GestioneAmministazioneController {
 	public Utente findById(@PathVariable(value = "id", required = true) long id,
 			@RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
+		
+		if(utenteInSession == null)
+			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		if (!utenteInSession.getRuoli()
 				.contains(ruoloService.cercaPerDescrizioneECodice("Administrator", "ROLE_ADMIN")))
@@ -155,6 +170,9 @@ public class GestioneAmministazioneController {
 	@ResponseStatus(HttpStatus.OK)
 	public void delete(@PathVariable(required = true) Long id, @RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
+		
+		if(utenteInSession == null)
+			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		if (!utenteInSession.getRuoli()
 				.contains(ruoloService.cercaPerDescrizioneECodice("Administrator", "ROLE_ADMIN")))
@@ -171,6 +189,9 @@ public class GestioneAmministazioneController {
 	@PostMapping("/search")
 	public List<Utente> search(@RequestBody Utente example, @RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
+		
+		if(utenteInSession == null)
+			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		if (!utenteInSession.getRuoli()
 				.contains(ruoloService.cercaPerDescrizioneECodice("Administrator", "ROLE_ADMIN")))

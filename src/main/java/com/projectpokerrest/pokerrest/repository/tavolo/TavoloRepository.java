@@ -16,7 +16,7 @@ public interface TavoloRepository extends CrudRepository<Tavolo, Long>, CustomTa
     @Query("select t from Tavolo t left join fetch t.utenteCreazione c")
     List<Tavolo> findAllEager();
     
-    @Query("select u from Tavolo t left join fetch t.utenti u where t.id = ?1")
+    @Query("select u from Utente u left join fetch u.tavolo t where t.id = ?1")
     List<Utente> findAllByTavolo(Long id);
 
 }
