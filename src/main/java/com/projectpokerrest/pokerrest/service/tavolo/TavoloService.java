@@ -24,5 +24,7 @@ public interface TavoloService {
     public List<Tavolo> listAllEager();
     
     public List<Utente> listAllByTavolo(Long id);
+    
+    public List<Tavolo> trovaTuttiPerEsperienza(Double esperienza);
 
 }

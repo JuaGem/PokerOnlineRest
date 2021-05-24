@@ -3,6 +3,8 @@ package com.projectpokerrest.pokerrest.service.tavolo;
 import com.projectpokerrest.pokerrest.model.Tavolo;
 import com.projectpokerrest.pokerrest.model.Utente;
 import com.projectpokerrest.pokerrest.repository.tavolo.TavoloRepository;
+import com.projectpokerrest.pokerrest.web.api.exception.TavoloNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,7 +64,7 @@ public class TavoloServiceImpl implements TavoloService {
     	tavoloInstance = entityManager.merge(tavoloInstance);
     	
     	if(!tavoloInstance.getUtenti().isEmpty())
-    		throw new RuntimeException("Tavolo occupato da giocatori, impossibile eliminarlo");
+    		throw new TavoloNotFoundException("Tavolo occupato da giocatori, impossibile eliminarlo");
     	
         repository.delete(tavoloInstance);
     }
@@ -75,6 +77,11 @@ public class TavoloServiceImpl implements TavoloService {
     @Transactional(readOnly = true)
     public List<Utente> listAllByTavolo(Long id) {
     	return repository.findAllByTavolo(id);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Tavolo> trovaTuttiPerEsperienza(Double esperienza) {
+    	return repository.findAllByEsperienza(esperienza);
     }
 
 }

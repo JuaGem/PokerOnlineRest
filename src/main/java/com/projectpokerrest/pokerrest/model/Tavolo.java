@@ -114,4 +114,16 @@ public class Tavolo {
         this.utenteCreazione = utenteCreazione;
     }
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == null || !(obj instanceof Tavolo))
+			return false;
+	
+		Tavolo other = (Tavolo) obj;
+		
+		return this.id.equals(other.id);
+	}
+    
+    
+
 }
