@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -38,13 +37,12 @@ public class GestioneAmministazioneController {
 
 	@Autowired
 	private RuoloService ruoloService;
-	
 
 	@GetMapping
 	public List<Utente> listAll(@RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
-		
-		if(utenteInSession == null)
+
+		if (utenteInSession == null)
 			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		if (!utenteInSession.getRuoli()
@@ -59,8 +57,8 @@ public class GestioneAmministazioneController {
 	public Utente createUtente(@Validated(InsertUtenteParamFromAdmin.class) @RequestBody Utente utente,
 			@RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
-		
-		if(utenteInSession == null)
+
+		if (utenteInSession == null)
 			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		if (!utenteInSession.getRuoli()
@@ -98,8 +96,8 @@ public class GestioneAmministazioneController {
 	public Utente update(@Validated(InsertUtenteParamFromAdmin.class) @RequestBody Utente utenteInput,
 			@PathVariable(required = true) Long id, @RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
-		
-		if(utenteInSession == null)
+
+		if (utenteInSession == null)
 			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		if (!utenteInSession.getRuoli()
@@ -113,27 +111,27 @@ public class GestioneAmministazioneController {
 		utenteInput.setId(id);
 		utenteInput.setDateCreated(utentePreModifica.getDateCreated());
 		utenteInput.setStato(utentePreModifica.getStato());
-		
-		if(utenteInput.getRuoli() == null)
+
+		if (utenteInput.getRuoli() == null)
 			utenteInput.setRuoli(utentePreModifica.getRuoli());
 
 		return utenteService.aggiorna(utenteInput);
 	}
-	
+
 	@PutMapping("/updatefree/{id}")
 	public Utente updateFree(@Validated(InsertUtenteParam.class) @RequestBody Utente utenteInput,
 			@PathVariable(required = true) Long id, @RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
-		
-		if(utenteInSession == null)
+
+		if (utenteInSession == null)
 			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
-		
-		if(!utenteInSession.getId().equals(id))
+
+		if (!utenteInSession.getId().equals(id))
 			throw new RuntimeException("Non puoi modificare le credenziali di un altro utente");
-		
+
 		if (utenteInput == null)
 			throw new UtenteNotFoundException("Utente not found con id: " + id);
-		
+
 		Utente utentePreModifica = utenteService.caricaSingoloUtente(id);
 		utenteInput.setId(id);
 		utenteInput.setDateCreated(utentePreModifica.getDateCreated());
@@ -142,7 +140,7 @@ public class GestioneAmministazioneController {
 		utenteInput.setCreditoResiduo(utentePreModifica.getCreditoResiduo());
 		utenteInput.setEsperienzaAccumulata(utentePreModifica.getEsperienzaAccumulata());
 		utenteInput.setRuoli(utentePreModifica.getRuoli());
-		
+
 		return utenteService.aggiorna(utenteInput);
 	}
 
@@ -150,8 +148,8 @@ public class GestioneAmministazioneController {
 	public Utente findById(@PathVariable(value = "id", required = true) long id,
 			@RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
-		
-		if(utenteInSession == null)
+
+		if (utenteInSession == null)
 			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		if (!utenteInSession.getRuoli()
@@ -170,8 +168,8 @@ public class GestioneAmministazioneController {
 	@ResponseStatus(HttpStatus.OK)
 	public void delete(@PathVariable(required = true) Long id, @RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
-		
-		if(utenteInSession == null)
+
+		if (utenteInSession == null)
 			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		if (!utenteInSession.getRuoli()
@@ -189,8 +187,8 @@ public class GestioneAmministazioneController {
 	@PostMapping("/search")
 	public List<Utente> search(@RequestBody Utente example, @RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
-		
-		if(utenteInSession == null)
+
+		if (utenteInSession == null)
 			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		if (!utenteInSession.getRuoli()

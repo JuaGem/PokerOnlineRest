@@ -71,8 +71,7 @@ public class PlayManagementController {
 				.contains(ruoloService.cercaPerDescrizioneECodice("Administrator", "ROLE_ADMIN")))
 			throw new UtenteNotFoundException("Operazione non consentita, non sei admin");
 
-		Utente TavoloByUtente = utenteService.caricaSingoloUtente(id);
-		return TavoloByUtente.getTavolo();
+		return utenteService.caricaSingoloUtente(id).getTavolo();
 	}
 
 	@DeleteMapping
@@ -97,7 +96,7 @@ public class PlayManagementController {
 	public List<Tavolo> search(@RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
 
-		if (utenteInSession == null || utenteInSession.getRuoli().isEmpty())
+		if (utenteInSession == null || utenteInSession.getRuoli().isEmpty() || !utenteInSession.isAttivo())
 			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		return tavoloService.trovaTuttiPerEsperienza(utenteInSession.getEsperienzaAccumulata());
@@ -112,16 +111,16 @@ public class PlayManagementController {
 			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		Tavolo tavolo = tavoloService.caricaSingoloTavoloConUtenti(id);
-		
+
 		if (tavolo == null)
 			throw new TavoloNotFoundException("Non esiste questo tavolo");
-		
-		if(utenteInSession.getTavolo() == null) {
+
+		if (utenteInSession.getTavolo() == null) {
 			utenteInSession.setTavolo(tavolo);
 			utenteService.aggiorna(utenteInSession);
 		}
-		
-		if(!utenteInSession.getTavolo().equals(tavolo))
+
+		if (!utenteInSession.getTavolo().equals(tavolo))
 			throw new GameRequirementsException("Non appartieni a questo tavolo");
 
 		tavolo.getUtenti().add(utenteInSession);
@@ -137,7 +136,7 @@ public class PlayManagementController {
 		Double segno = Math.random();
 		Integer somma = (int) (Math.random() * 1000);
 		Double tot = null;
-		String messaggio = null;
+		String messaggio = "";
 		System.out.println("-------- SEGNO -------\n" + segno + "\n------------- SOMMA ---------\n" + somma);
 
 		if (segno >= 0.5) {
@@ -148,12 +147,10 @@ public class PlayManagementController {
 			System.out.println("-------- SEGNO -------\n" + segno + "\n------------- SOMMA ---------\n" + somma);
 		}
 		tot = segno * somma;
-		utenteInSession.setCreditoAccumulato(utenteInSession.getCreditoAccumulato() + tot);
 
 		if (tot <= 0) {
 			messaggio = "Hai perso!";
-			utenteInSession
-					.setCreditoResiduo(utenteInSession.getCreditoResiduo() - tot);
+			utenteInSession.setCreditoResiduo(utenteInSession.getCreditoResiduo() - tot);
 			if (utenteInSession.getCreditoResiduo() < 0) {
 				messaggio = "Hai esaurito il credito!";
 				utenteInSession.setCreditoResiduo(0D);
@@ -162,8 +159,7 @@ public class PlayManagementController {
 
 		} else {
 			messaggio = "Hai vinto!" + tot;
-			utenteInSession
-					.setCreditoResiduo(utenteInSession.getCreditoResiduo() + tot);
+			utenteInSession.setCreditoResiduo(utenteInSession.getCreditoResiduo() + tot);
 		}
 
 		utenteService.aggiorna(utenteInSession);

@@ -44,8 +44,8 @@ public class GestioneTavoloController {
 	public Tavolo createTavolo(@Validated(InsertTavoloParam.class) @RequestBody Tavolo tavolo,
 			@PathVariable(required = true) Long id, @RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
-		
-		if(utenteInSession == null || utenteInSession.getRuoli().isEmpty())
+
+		if (utenteInSession == null || utenteInSession.getRuoli().isEmpty())
 			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		if (utenteInSession.getRuoli().contains(ruoloService.cercaPerDescrizioneECodice("Player User", "ROLE_PLAYER"))
@@ -58,7 +58,7 @@ public class GestioneTavoloController {
 				.contains(ruoloService.cercaPerDescrizioneECodice("Administrator", "ROLE_ADMIN"))) {
 			tavolo.setUtenteCreazione(utenteService.caricaSingoloUtente(id));
 			return tavoloService.inserisciNuovo(tavolo);
-		} 
+		}
 
 		tavolo.setUtenteCreazione(utenteInSession);
 		return tavoloService.inserisciNuovo(tavolo);
@@ -67,8 +67,8 @@ public class GestioneTavoloController {
 	@GetMapping
 	public List<Tavolo> listAll(@RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
-		
-		if(utenteInSession == null)
+
+		if (utenteInSession == null)
 			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		if (!utenteInSession.getRuoli()
@@ -83,8 +83,8 @@ public class GestioneTavoloController {
 	public void associaUtenteAlTavolo(@PathVariable(required = true) Long idTavolo,
 			@PathVariable(required = true) Long idUtente, @RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
-		
-		if(utenteInSession == null || utenteInSession.getRuoli().isEmpty())
+
+		if (utenteInSession == null || utenteInSession.getRuoli().isEmpty())
 			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
 
 		if (utenteInSession.getRuoli().contains(ruoloService.cercaPerDescrizioneECodice("Player User", "ROLE_PLAYER"))
@@ -104,7 +104,7 @@ public class GestioneTavoloController {
 		utente.setTavolo(tavolo);
 		utenteService.aggiorna(utente);
 	}
-	
+
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public void delete(@PathVariable(required = true) Long id, @RequestHeader("Authorization") String user) {
@@ -112,53 +112,53 @@ public class GestioneTavoloController {
 
 		if (utenteInSession == null || utenteInSession.getRuoli().isEmpty())
 			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
-		
+
 		if (utenteInSession.getRuoli().contains(ruoloService.cercaPerDescrizioneECodice("Player User", "ROLE_PLAYER"))
 				&& utenteInSession.getRuoli().size() == 1)
 			throw new UtenteNotFoundException("Operazione non consentita, non sei ne admin, ne special");
-		
+
 		Tavolo tavolo = tavoloService.caricaSingoloTavoloConUtenti(id);
-		
-		if(tavolo == null)
+
+		if (tavolo == null)
 			throw new TavoloNotFoundException("Tavolo not found con id: " + id);
-		
+
 		if (utenteInSession.getRuoli()
 				.contains(ruoloService.cercaPerDescrizioneECodice("Special Player User", "ROLE_SPECIAL_PLAYER"))
 				&& !utenteInSession.getRuoli()
 						.contains(ruoloService.cercaPerDescrizioneECodice("Administrator", "ROLE_ADMIN"))
 				&& !tavolo.getUtenteCreazione().equals(utenteInSession))
 			throw new TavoloNotFoundException("Operazione non consentita");
-		
+
 		tavoloService.rimuovi(tavolo);
 	}
-	
+
 	@GetMapping("/{id}")
 	public Tavolo findById(@PathVariable(value = "id", required = true) long id,
 			@RequestHeader("Authorization") String user) {
 		Utente utenteInSession = utenteService.findByUsername(user);
-		
+
 		if (utenteInSession == null || utenteInSession.getRuoli().isEmpty())
 			throw new UtenteNotFoundException("Attenzione, non sei loggato!");
-		
+
 		if (utenteInSession.getRuoli().contains(ruoloService.cercaPerDescrizioneECodice("Player User", "ROLE_PLAYER"))
 				&& utenteInSession.getRuoli().size() == 1)
 			throw new UtenteNotFoundException("Operazione non consentita, non sei ne admin, ne special");
-		
+
 		Tavolo tavolo = tavoloService.caricaSingoloTavoloConUtenti(id);
-		
-		if(tavolo == null)
+
+		if (tavolo == null)
 			throw new TavoloNotFoundException("Tavolo not found con id: " + id);
-		
+
 		if (utenteInSession.getRuoli()
 				.contains(ruoloService.cercaPerDescrizioneECodice("Special Player User", "ROLE_SPECIAL_PLAYER"))
 				&& !utenteInSession.getRuoli()
 						.contains(ruoloService.cercaPerDescrizioneECodice("Administrator", "ROLE_ADMIN"))
 				&& !tavolo.getUtenteCreazione().equals(utenteInSession))
 			throw new TavoloNotFoundException("Operazione non consentita");
-		
+
 		return tavolo;
 	}
-	
+
 	@PutMapping("/{id}/{idUtente}")
 	public Tavolo update(@Validated(InsertTavoloParam.class) @RequestBody Tavolo tavoloInput,
 			@PathVariable(required = true) Long id, @RequestHeader("Authorization") String user) {
@@ -170,27 +170,27 @@ public class GestioneTavoloController {
 		if (utenteInSession.getRuoli().contains(ruoloService.cercaPerDescrizioneECodice("Player User", "ROLE_PLAYER"))
 				&& utenteInSession.getRuoli().size() == 1)
 			throw new UtenteNotFoundException("Operazione non consentita, non sei ne admin, ne special");
-		
+
 		Tavolo tavoloPreModifica = tavoloService.caricaSingoloTavoloConUtenti(id);
-		
-		if(tavoloPreModifica == null)
+
+		if (tavoloPreModifica == null)
 			throw new TavoloNotFoundException("Tavolo not found con id: " + id);
-		
+
 		if (utenteInSession.getRuoli()
 				.contains(ruoloService.cercaPerDescrizioneECodice("Special Player User", "ROLE_SPECIAL_PLAYER"))
 				&& !utenteInSession.getRuoli()
 						.contains(ruoloService.cercaPerDescrizioneECodice("Administrator", "ROLE_ADMIN"))
 				&& !tavoloInput.getUtenteCreazione().equals(utenteInSession))
 			throw new TavoloNotFoundException("Operazione non consentita");
-		
+
 		tavoloInput.setDataCreazione(tavoloPreModifica.getDataCreazione());
-		
+
 		if (utenteInSession.getRuoli()
 				.contains(ruoloService.cercaPerDescrizioneECodice("Administrator", "ROLE_ADMIN"))) {
 			tavoloInput.setUtenteCreazione(utenteService.caricaSingoloUtente(id));
 			return tavoloService.aggiorna(tavoloInput);
 		}
-		
+
 		tavoloInput.setUtenteCreazione(utenteInSession);
 		return tavoloService.aggiorna(tavoloInput);
 	}

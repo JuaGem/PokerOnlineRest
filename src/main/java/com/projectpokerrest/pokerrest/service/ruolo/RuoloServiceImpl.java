@@ -13,7 +13,7 @@ public class RuoloServiceImpl implements RuoloService {
 
 	@Autowired
 	private RuoloRepository repository;
-	
+
 	@Transactional(readOnly = true)
 	public List<Ruolo> listAll() {
 		return (List<Ruolo>) repository.findAll();

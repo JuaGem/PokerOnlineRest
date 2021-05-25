@@ -13,11 +13,9 @@ import com.projectpokerrest.pokerrest.model.Utente;
 import com.projectpokerrest.pokerrest.service.ruolo.RuoloService;
 import com.projectpokerrest.pokerrest.service.utente.UtenteService;
 
-
-
 @SpringBootApplication
-public class PokerrestApplication implements CommandLineRunner{
-	
+public class PokerrestApplication implements CommandLineRunner {
+
 	@Autowired
 	private RuoloService ruoloServiceInstance;
 	@Autowired
@@ -26,16 +24,16 @@ public class PokerrestApplication implements CommandLineRunner{
 	public static void main(String[] args) {
 		SpringApplication.run(PokerrestApplication.class, args);
 	}
-	
+
 	@Override
 	public void run(String... args) throws Exception {
-		if (ruoloServiceInstance.cercaPerDescrizioneECodice("Administrator", "ROLE_ADMIN") == null) 
+		if (ruoloServiceInstance.cercaPerDescrizioneECodice("Administrator", "ROLE_ADMIN") == null)
 			ruoloServiceInstance.inserisciNuovo(new Ruolo("Administrator", "ROLE_ADMIN"));
 
-		if (ruoloServiceInstance.cercaPerDescrizioneECodice("Player User", "ROLE_PLAYER") == null) 
+		if (ruoloServiceInstance.cercaPerDescrizioneECodice("Player User", "ROLE_PLAYER") == null)
 			ruoloServiceInstance.inserisciNuovo(new Ruolo("Player User", "ROLE_PLAYER"));
-		
-		if(ruoloServiceInstance.cercaPerDescrizioneECodice("Special Player User", "ROLE_SPECIAL_PLAYER") == null)
+
+		if (ruoloServiceInstance.cercaPerDescrizioneECodice("Special Player User", "ROLE_SPECIAL_PLAYER") == null)
 			ruoloServiceInstance.inserisciNuovo(new Ruolo("Special Player User", "ROLE_SPECIAL_PLAYER"));
 
 		if (utenteServiceInstance.findByUsernameAndPassword("admin", "admin") == null) {
@@ -46,7 +44,7 @@ public class PokerrestApplication implements CommandLineRunner{
 //			utenteServiceInstance.aggiungiRuolo(admin,
 //					ruoloServiceInstance.cercaPerDescrizioneECodice("Administrator", "ROLE_ADMIN"));
 		}
-		
+
 		if (utenteServiceInstance.findByUsernameAndPassword("user", "user") == null) {
 			Utente player = new Utente("user", "user", "Antonio", "Verdi", new Date());
 			player.setStato(StatoUtente.ATTIVO);
@@ -55,17 +53,17 @@ public class PokerrestApplication implements CommandLineRunner{
 //			utenteServiceInstance.aggiungiRuolo(player,
 //					ruoloServiceInstance.cercaPerDescrizioneECodice("Player User", "ROLE_PLAYER"));
 		}
-		
-		if(utenteServiceInstance.findByUsernameAndPassword("special", "special") == null) {
-			Utente specialPlayer = new Utente("special","special","Andrea","Vecchiato", new Date());
+
+		if (utenteServiceInstance.findByUsernameAndPassword("special", "special") == null) {
+			Utente specialPlayer = new Utente("special", "special", "Andrea", "Vecchiato", new Date());
 			specialPlayer.setStato(StatoUtente.ATTIVO);
-			specialPlayer.getRuoli().add(ruoloServiceInstance.cercaPerDescrizioneECodice("Special Player User", "ROLE_SPECIAL_PLAYER"));
+			specialPlayer.getRuoli()
+					.add(ruoloServiceInstance.cercaPerDescrizioneECodice("Special Player User", "ROLE_SPECIAL_PLAYER"));
 			utenteServiceInstance.inserisciNuovo(specialPlayer);
 //			utenteServiceInstance.aggiungiRuolo(specialPlayer, 
 //					ruoloServiceInstance.cercaPerDescrizioneECodice("Special Player User", "ROLE_SPECIAL_PLAYER"));
 		}
-		
-	}
 
+	}
 
 }

@@ -5,7 +5,6 @@ import com.projectpokerrest.pokerrest.model.StatoUtente;
 import com.projectpokerrest.pokerrest.model.Utente;
 import com.projectpokerrest.pokerrest.repository.utente.UtenteRepository;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,7 @@ public class UtenteServiceImpl implements UtenteService {
 
 	@Autowired
 	private UtenteRepository repository;
-	
+
 	@PersistenceContext
 	private EntityManager entityManager;
 
@@ -66,12 +65,13 @@ public class UtenteServiceImpl implements UtenteService {
 	@Transactional
 	public void invertUserAbilitation(Long utenteInstanceId) {
 		Utente utenteInstance = caricaSingoloUtente(utenteInstanceId);
-		if(utenteInstance == null)
+		if (utenteInstance == null)
 			throw new RuntimeException("Elemento non trovato.");
-		
-		if(utenteInstance.getStato().equals(StatoUtente.ATTIVO))
+
+		if (utenteInstance.getStato().equals(StatoUtente.ATTIVO))
 			utenteInstance.setStato(StatoUtente.DISABILITATO);
-		else if(utenteInstance.getStato().equals(StatoUtente.DISABILITATO) || utenteInstance.getStato().equals(StatoUtente.CREATO))
+		else if (utenteInstance.getStato().equals(StatoUtente.DISABILITATO)
+				|| utenteInstance.getStato().equals(StatoUtente.CREATO))
 			utenteInstance.setStato(StatoUtente.ATTIVO);
 	}
 
@@ -92,7 +92,7 @@ public class UtenteServiceImpl implements UtenteService {
 	public Utente caricaUtenteConRuoli(Long id) {
 		return repository.findOneEagerRuoli(id).orElse(null);
 	}
-	
+
 	@Transactional
 	public void aggiungiRuolo(Utente utenteEsistente, Ruolo ruoloInstance) {
 //		utenteEsistente = entityManager.merge(utenteEsistente);
@@ -100,7 +100,7 @@ public class UtenteServiceImpl implements UtenteService {
 
 		utenteEsistente.getRuoli().add(ruoloInstance);
 	}
-	
+
 	@Transactional(readOnly = true)
 	public boolean unicoAdminAttivo() {
 		return repository.countByUtenteAdminAttivo() == 1;
